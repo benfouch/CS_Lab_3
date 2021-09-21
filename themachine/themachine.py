@@ -60,6 +60,50 @@ def checkMagicNumber(header):
 def readNumOfOps(next_byte):
     return int.from_bytes(next_byte, "big")
 
+  
+def read_operand():
+    b1 = readfile.read_byte()
+    b2 = readfile.read_byte()
+    opd = b1 + b2
+    opd = int.from_bytes(opd, 'big')
+
+    if opd == 1:
+        add()
+    elif opd == 2:
+        subtract()
+    elif opd == 3:
+        multiply()
+    elif opd == 4:
+        divide()
+    elif opd == 5:
+        string()
+    else:
+        error()
+
+
+def add():
+    pass
+
+
+def subtract():
+    pass
+
+
+def multiply():
+    pass
+
+
+def divide():
+    pass
+
+
+def string():
+    pass
+
+
+def error():
+    pass
+
 
 # Invoke the main method to run the program.
 main()

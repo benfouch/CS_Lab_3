@@ -45,64 +45,78 @@ def execute(program_file):
     :param str program_file: name of the file to execute
     """
 
-    num_of_0ps = -1
-    readfile.set_file(program_file)
-    if checkMagicNumber(readfile.read_byte() + readfile.read_byte()):
-        num_of_ops = readNumOfOps(readfile.read_byte())
-        # readOps()
-
-    readfile.set_file(program_file)
-
-def checkMagicNumber(header):
-    return header == b'\x31\x41\xFA\xCE'
+    try:
+        readfile.set_file(program_file)
+        if check_magic_number(readfile.read_byte() + readfile.read_byte() + readfile.read_byte() + readfile.read_byte()):
+            read_operand(read_num_of_ops(readfile.read_byte() + readfile.read_byte()))
+    except:
+        print("Invalid File")
+    finally:
+        readfile.set_file(program_file)
 
 
-def readNumOfOps(next_byte):
+def check_magic_number(header):
+    return header == b'1A\xfa\xce'
+
+
+def read_num_of_ops(next_byte):
     return int.from_bytes(next_byte, "big")
 
-  
-def read_operand():
-    b1 = readfile.read_byte()
-    b2 = readfile.read_byte()
-    opd = b1 + b2
-    opd = int.from_bytes(opd, 'big')
 
-    if opd == 1:
-        add()
-    elif opd == 2:
-        subtract()
-    elif opd == 3:
-        multiply()
-    elif opd == 4:
-        divide()
-    elif opd == 5:
-        string()
-    else:
-        error()
+def read_operand(num_of_ops):
+    while num_of_ops != 0:
+        b1 = readfile.read_byte()
+        opd = b1
+        opd = int.from_bytes(opd, 'big')
+
+        if opd == 1:
+            add()
+        elif opd == 2:
+            subtract()
+        elif opd == 3:
+            multiply()
+        elif opd == 4:
+            divide()
+        elif opd == 5:
+            string()
+        else:
+            raise Exception("Operand Not Supported")
+
+        num_of_ops -= 1
 
 
 def add():
-    pass
+    byte_1 = readfile.read_byte() + readfile.read_byte()
+    byte_2 = readfile.read_byte() + readfile.read_byte()
+    print(int.from_bytes(byte_1, "big") + int.from_bytes(byte_2, "big"))
 
 
 def subtract():
-    pass
+    byte_1 = readfile.read_byte() + readfile.read_byte()
+    byte_2 = readfile.read_byte() + readfile.read_byte()
+    print(int.from_bytes(byte_1, "big") - int.from_bytes(byte_2, "big"))
 
 
 def multiply():
-    pass
+    byte_1 = readfile.read_byte() + readfile.read_byte()
+    byte_2 = readfile.read_byte() + readfile.read_byte()
+    print(int.from_bytes(byte_1, "big") * int.from_bytes(byte_2, "big"))
 
 
 def divide():
-    pass
+    byte_1 = readfile.read_byte() + readfile.read_byte()
+    byte_2 = readfile.read_byte() + readfile.read_byte()
+    print(int.from_bytes(byte_1, "big") / int.from_bytes(byte_2, "big"))
 
 
 def string():
-    pass
-
-
-def error():
-    pass
+    next_byte = readfile.read_byte()
+    end_string = ""
+    while next_byte != b'\x0A':
+        end_string += next_byte.decode("ASCII")
+        next_byte = readfile.read_byte()
+    end_string += next_byte.decode("ASCII")
+    print(end_string)
 
 
 # Invoke the main method to run the program.

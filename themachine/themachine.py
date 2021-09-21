@@ -26,7 +26,6 @@ Summary: (Summarize your experience with the lab, what you learned, what you lik
 
 """
 
-# import the readfile modules to read bytes from a file
 import readfile
 
 
@@ -45,6 +44,21 @@ def execute(program_file):
     - Execute a program file formatted for "The Machine"
     :param str program_file: name of the file to execute
     """
+
+    num_of_0ps = -1
+    readfile.set_file(program_file)
+    if checkMagicNumber(readfile.read_byte() + readfile.read_byte()):
+        num_of_ops = readNumOfOps(readfile.read_byte())
+        # readOps()
+
+    readfile.set_file(program_file)
+
+def checkMagicNumber(header):
+    return header == b'\x31\x41\xFA\xCE'
+
+
+def readNumOfOps(next_byte):
+    return int.from_bytes(next_byte, "big")
 
 
 # Invoke the main method to run the program.
